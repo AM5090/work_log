@@ -1,20 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Journal } from './journal.model';
-import { JournalDto } from './dto/journal.dto';
+import { GetJournalQueryDto, MutateJournalDto } from './dto/journal.dto';
 import { CreationAttributes } from 'sequelize';
 
 @Injectable()
 export class JournalService {
   constructor(@InjectModel(Journal) private journalModel: typeof Journal) {}
 
-  async get(sorted: string): Promise<Journal[]> {
+  async get(sorted: GetJournalQueryDto['sortedBy'] = 'ASC'): Promise<Journal[]> {
     return this.journalModel.findAll({
       order: [['createdAt', sorted]],
     });
   }
 
-  async create(data: JournalDto): Promise<Journal> {
+  async create(data: MutateJournalDto): Promise<Journal> {
     return this.journalModel.create({
       workType: data.workType,
       volume: data.volume,
@@ -22,15 +22,17 @@ export class JournalService {
     } as unknown as CreationAttributes<Journal>);
   }
 
-  async delete(ids: number[]): Promise<number> {
-    return await this.journalModel.destroy({
+  async delete(ids: number[]): Promise<string> {
+    const deletedCount = await this.journalModel.destroy({
       where: {
         id: ids,
       },
     });
+
+    return `Удалено записей - ${deletedCount}`
   }
 
-  async update(id: number, data: JournalDto): Promise<Journal> {
+  async update(id: number, data: MutateJournalDto): Promise<Journal> {
     const [affectedCount, affectedRows] = await this.journalModel.update(
       {
         workType: data.workType,
@@ -44,7 +46,7 @@ export class JournalService {
     );
 
     if (affectedCount === 0) {
-      throw new NotFoundException(`Journal with id ${id} not found`);
+      throw new NotFoundException(`Запись с id ${id} не найдена`);
     }
 
     return affectedRows[0];
