@@ -6,17 +6,17 @@ export class Journal extends Model<Journal> {
     type: DataType.STRING,
     allowNull: false,
   })
-  workType: string;
+  declare workType: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  volume: string;
+  declare volume: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  executor: string;
+  declare executor: string;
 }

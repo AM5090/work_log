@@ -10,7 +10,11 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { DeleteJournalDto, GetJournalQueryDto, MutateJournalDto } from './dto/journal.dto';
+import {
+  DeleteJournalDto,
+  GetJournalQueryDto,
+  MutateJournalDto,
+} from './dto/journal.dto';
 import { JournalService } from './journal.service';
 
 @Controller('journal')
@@ -18,7 +22,7 @@ export class JournalController {
   constructor(private readonly journalService: JournalService) {}
 
   @Get()
-  async get(@Query('sortedBy') sorted: GetJournalQueryDto["sortedBy"]) {
+  async get(@Query('sortedBy') sorted: GetJournalQueryDto['sortedBy']) {
     return this.journalService.get(sorted);
   }
 
@@ -34,10 +38,14 @@ export class JournalController {
   }
 
   @Put()
-  async update(@Query('id', ParseIntPipe) id: number, @Body() dto: MutateJournalDto) {
-
+  async update(
+    @Query('id', ParseIntPipe) id: number,
+    @Body() dto: MutateJournalDto,
+  ) {
     if (isNaN(id)) {
-      throw new BadRequestException('Не верный формат id для обновления записи');
+      throw new BadRequestException(
+        'Не верный формат id для обновления записи',
+      );
     }
 
     if (Object.keys(dto).length === 0) {

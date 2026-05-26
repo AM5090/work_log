@@ -69,6 +69,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 packages/*/dist/
 packages/*/build/
 packages/*/node_modules/
+packages/*/package-lock.json
 packages/*/.env
 packages/*/.env.local
 

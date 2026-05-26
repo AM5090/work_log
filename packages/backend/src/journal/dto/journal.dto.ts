@@ -7,7 +7,7 @@ import {
   ArrayMinSize,
   IsNotEmpty,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 
 export class MutateJournalDto {
   @IsString()
@@ -27,7 +27,8 @@ export class DeleteJournalDto {
   @IsArray()
   @ArrayMinSize(1)
   @IsNumber({}, { each: true })
-  @Transform(({ value }) => value.split(',').map(v => +v))
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  @Transform(({ value }) => value.split(',').map((v: string | number) => +v))
   ids: number[];
 }
 
