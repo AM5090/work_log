@@ -8,7 +8,9 @@ import { CreationAttributes } from 'sequelize';
 export class JournalService {
   constructor(@InjectModel(Journal) private journalModel: typeof Journal) {}
 
-  async get(sorted: GetJournalQueryDto['sortedBy'] = 'ASC'): Promise<Journal[]> {
+  async get(
+    sorted: GetJournalQueryDto['sortedBy'] = 'ASC',
+  ): Promise<Journal[]> {
     return this.journalModel.findAll({
       order: [['createdAt', sorted]],
     });
@@ -29,7 +31,7 @@ export class JournalService {
       },
     });
 
-    return `Удалено записей - ${deletedCount}`
+    return `Удалено записей - ${deletedCount}`;
   }
 
   async update(id: number, data: MutateJournalDto): Promise<Journal> {

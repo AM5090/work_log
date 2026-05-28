@@ -13,6 +13,8 @@ import { columns } from "./settings";
 import { WorkMutateForm } from "../workMutateForm";
 import { modalNames, type ModalNamesKeys } from "./constants";
 import { DeleteComponent } from "../deleteComponent";
+import { useCreateWork } from "../../hooks/api/useCreateWork";
+import { useUpdateWork } from "../../hooks/api/useUpdateWork";
 
 type TableRowSelection<T extends object = object> =
   TableProps<T>["rowSelection"];
@@ -25,6 +27,8 @@ const Table = () => {
   );
 
   const { data, isLoading } = useGetAllWorks(sorted);
+  const create = useCreateWork();
+  const update = useUpdateWork();
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
@@ -108,10 +112,30 @@ const Table = () => {
         }}
         footer={null}
       >
-        {modalName === "create" && <WorkMutateForm />}
-        {modalName === "change" && <WorkMutateForm />}
+        {modalName === "create" && (
+          <WorkMutateForm
+            onSubmitFunc={async (fields) => {
+              await create.mutateAsync(fields);
+              setIsModalOpen(false);
+            }}
+          />
+        )}
+        {modalName === "change" && (
+          <WorkMutateForm
+            onSubmitFunc={async (fields) => {
+              await update.mutateAsync({
+                updateId: selectedRowKeys[0] as unknown as string,
+                body: fields,
+              });
+              setIsModalOpen(false);
+            }}
+          />
+        )}
         {modalName === "delete" && (
-          <DeleteComponent selectedRowKeys={selectedRowKeys.length} />
+          <DeleteComponent
+            closeModal={() => setIsModalOpen(false)}
+            selectedRowKeys={selectedRowKeys as unknown as (string | number)[]}
+          />
         )}
       </Modal>
     </div>

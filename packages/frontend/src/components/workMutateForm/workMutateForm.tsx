@@ -1,9 +1,16 @@
 import { Button, Form, Input, InputNumber } from "antd";
 import type { WorkMutateFields } from "../../hooks/api/types";
+import type { FC } from "react";
 
 const { useForm } = Form;
 
-const WorkMutateForm = () => {
+interface WorkMutateFormProps {
+  onSubmitFunc: (fields: WorkMutateFields) => void;
+}
+
+const WorkMutateForm: FC<WorkMutateFormProps> = (props) => {
+  const { onSubmitFunc } = props;
+
   const [form] = useForm();
   return (
     <Form
@@ -11,6 +18,9 @@ const WorkMutateForm = () => {
       form={form}
       layout="vertical"
       requiredMark="optional"
+      onFinish={(fields: WorkMutateFields) => {
+        onSubmitFunc(fields);
+      }}
     >
       <Form.Item<WorkMutateFields>
         label="Тип работ"
